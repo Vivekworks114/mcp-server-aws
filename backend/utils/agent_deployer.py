@@ -371,10 +371,18 @@ def _deploy_company_agent_sync(company_id: str, company_name: str, agent_id: Opt
         else:
             raise Exception(f"requirements.txt not found at: {requirements_src}")
         
-        # Copy company-specific file to fixed name for Docker build
-        docker_agent_file = agents_dir / "company_agent_stateless.py"
-        shutil.copy2(agent_file_path, docker_agent_file)
-        _stream_log(agent_id, f"Copied agent file to Docker build context: {docker_agent_file}")
+        # Copy generated file to a fixed build name that won't overwrite the template
+        # The template file (company_agent_stateless.py) must remain untouched
+        # Using a fixed name since only one build happens at a time
+        build_agent_filename = "company_agent_stateless_build.py"
+        build_agent_file = agents_dir / build_agent_filename
+        
+        # Remove any existing build file first (from previous failed builds)
+        if build_agent_file.exists():
+            build_agent_file.unlink()
+        
+        shutil.copy2(agent_file_path, build_agent_file)
+        _stream_log(agent_id, f"Copied generated agent file to build context: {build_agent_file}")
         
         # ----------------------------------------------------
         # ECR Repository Setup
@@ -406,6 +414,14 @@ def _deploy_company_agent_sync(company_id: str, company_name: str, agent_id: Opt
             company_name=company_name,
             vector_db_namespace=vector_db_namespace
         )
+        
+        # Clean up build-specific file after successful build
+        try:
+            if build_agent_file.exists():
+                build_agent_file.unlink()
+                _stream_log(agent_id, f"Cleaned up build file: {build_agent_file}")
+        except Exception as e:
+            _stream_log(agent_id, f"Note: Could not clean up build file: {str(e)}")
         
         # ----------------------------------------------------
         # Push Docker Image to ECR

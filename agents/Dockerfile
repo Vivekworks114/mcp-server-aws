@@ -24,10 +24,11 @@ ARG VECTOR_DB_NAMESPACE
 # Copy base runtime files
 COPY runtime.py .
 
-# Copy company-specific agent file (will be copied as company_agent_stateless.py before build)
-# The build process copies the generated company_agent_${COMPANY_ID}_stateless.py 
-# to company_agent_stateless.py before running docker build
-COPY company_agent_stateless.py .
+# Copy company-specific agent file (generated dynamically per company)
+# The build process generates company_agent_${COMPANY_ID}_stateless.py 
+# and copies it to company_agent_stateless_build.py (temporary build file)
+# This ensures the template (company_agent_stateless.py) is never overwritten
+COPY company_agent_stateless_build.py company_agent_stateless.py
 
 # Set build-time environment variables (for code generation/injection)
 ENV COMPANY_ID=${COMPANY_ID}

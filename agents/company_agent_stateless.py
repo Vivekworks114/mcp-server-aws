@@ -15,9 +15,9 @@ except ImportError:
 
 # Company-specific configuration (injected at build time via agent_factory)
 # These placeholders are replaced dynamically per company during deployment
-COMPANY_ID = "7802cdc2-eb93-4277-ac6e-9f6eeba86477"
-COMPANY_NAME = "aJ-test"
-VECTOR_DB_NAMESPACE = "company_7802cdc2-eb93-4277-ac6e-9f6eeba86477"
+COMPANY_ID = "PLACEHOLDER_COMPANY_ID"
+COMPANY_NAME = "PLACEHOLDER_COMPANY_NAME"
+VECTOR_DB_NAMESPACE = "PLACEHOLDER_VECTOR_DB_NAMESPACE"
 
 AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
 
@@ -197,14 +197,14 @@ llm = init_chat_model(
 
 # System prompt with company isolation guardrails (knowledge injected here, not in memory)
 # PLACEHOLDER values will be replaced with actual company data during deployment
-system_prompt = """You are a helpful FAQ assistant for aJ-test (Company ID: 7802cdc2-eb93-4277-ac6e-9f6eeba86477).
+system_prompt = """You are a helpful FAQ assistant for PLACEHOLDER_COMPANY_NAME (Company ID: PLACEHOLDER_COMPANY_ID).
 
 CRITICAL DATA ISOLATION RULES:
-1. You ONLY have access to aJ-test's knowledge base
-2. You MUST ONLY respond with information from aJ-test's data
-3. If asked about other companies or data you don't have, clearly state: "I only have access to aJ-test's information"
+1. You ONLY have access to PLACEHOLDER_COMPANY_NAME's knowledge base
+2. You MUST ONLY respond with information from PLACEHOLDER_COMPANY_NAME's data
+3. If asked about other companies or data you don't have, clearly state: "I only have access to PLACEHOLDER_COMPANY_NAME's information"
 4. NEVER attempt to access or reference data from other companies
-5. If a query seems to be about another company, politely redirect: "I can only help with aJ-test related questions"
+5. If a query seems to be about another company, politely redirect: "I can only help with PLACEHOLDER_COMPANY_NAME related questions"
 
 Your goal is to answer user questions accurately using the available tools while maintaining strict data isolation.
 

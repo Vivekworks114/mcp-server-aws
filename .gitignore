@@ -210,6 +210,10 @@ __marimo__/
 .bedrock_agentcore/
 .bedrock_agentcore.yaml
 
+# Agent build files (temporary, generated per company)
+agents/company_agent_*_stateless.py
+agents/company_agent_stateless_build.py
+
 # Node.js / Next.js
 node_modules/
 npm-debug.log*
@@ -221,3 +225,6 @@ out/
 build/
 dist/
 *.tsbuildinfo
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
